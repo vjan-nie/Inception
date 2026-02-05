@@ -47,7 +47,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      # Usamos ${HOME} para que apunte a /home/usuario_actual/data/...
+      
       device: ${HOME}/data/mariadb
 
   wordpress_data:
