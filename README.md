@@ -19,7 +19,7 @@ It is designed to run inside a **Virtual Machine** for reproducibility and isola
 - **Docker Containers** instead of VM-only deployment: lightweight, reproducible, isolated environments  
 - **Docker Compose** for orchestration of multiple services  
 - **Volumes & Bind Mounts** for persistent data (`/data/mariadb`, `/data/wordpress`)  
-- **Environment Variables** for secrets (database credentials, WordPress admin user)  
+- **Environment Variables** (database credentials, WordPress admin user)  
 - **Self-signed SSL certificate** to enforce HTTPS in Nginx  
 - **PHP-FPM** for efficient handling of PHP scripts  
 - **FastCGI** between Nginx and WordPress for proper request handling  
@@ -29,7 +29,6 @@ It is designed to run inside a **Virtual Machine** for reproducibility and isola
 | Concept                        | Choice in Project | Notes |
 |--------------------------------|-----------------|-------|
 | Virtual Machines vs Docker      | Docker          | Docker is lightweight, faster to deploy, easier to maintain than full VMs; VMs are heavier but provide full OS isolation. |
-| Secrets vs Environment Variables | Environment Variables | Simple to pass credentials and config into containers; secrets are more secure but require Docker Swarm/Kubernetes. |
 | Docker Network vs Host Network | Docker Network  | Isolates containers in a private network (`inception_network`), allows service-to-service communication without exposing ports unnecessarily. |
 | Docker Volumes vs Bind Mounts   | Bind Mounts     | Data stored in host directories (`$HOME/data/...`) to persist across container rebuilds; ensures transparency and easy backup. |
 
@@ -47,7 +46,7 @@ It is designed to run inside a **Virtual Machine** for reproducibility and isola
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/username/inception.git
+git clone https://github.com/vjan-nie/Inception.git
 cd inception
 ```
 
