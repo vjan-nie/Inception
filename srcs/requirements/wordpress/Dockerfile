@@ -8,20 +8,25 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-RUN mkdir -p /run/php
+# PHP-FPM needs this path to exist
+RUN mkdir -p /run/php && chmod 755 /run/php
 
+# Configuration and Script
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
-
 COPY tools/setup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/setup.sh
 
+# In case it doesn't existe, create folder
 WORKDIR /var/www/html
 
 EXPOSE 9000
 
 ENTRYPOINT ["/usr/local/bin/setup.sh"]
-CMD ["/usr/sbin/php-fpm7.4", "--nodaemonize"]
+
+# -F to enforce PID1
+CMD ["/usr/sbin/php-fpm7.4", "-F"]

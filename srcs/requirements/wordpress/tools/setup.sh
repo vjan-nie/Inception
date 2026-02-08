@@ -7,7 +7,7 @@ until mysql -h mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "USE $MYSQL_DATABA
     sleep 2
 done
 
-if [ ! -f /var/www/html/wp-config.php ]; then
+if [ ! -f wp-config.php ]; then
     echo "WordPress not found, installing..."
 
     # Download (--force in case there are leftovers of a failed previous process)
@@ -40,6 +40,7 @@ fi
 
 # PHP-FPM runs as www-data
 chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
 
 # Execute Dockerfile CMD (php-fpm)
 exec "$@"
