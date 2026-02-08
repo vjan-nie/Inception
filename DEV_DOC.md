@@ -25,4 +25,3 @@ Nginx communicates with PHP-FPM using the FastCGI protocol on port 9000.
 
 ## Maintenance
 - **Prune Docker System**: `sudo docker system prune -a`
-- **Rebuild from scratch**: `sudo make re`

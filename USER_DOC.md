@@ -33,4 +33,3 @@ Open https://vjan-nie.42.fr in your browser. Expect a self-signed TLS warning (p
 
 - Permission denied during `make setup`: re-run with `sudo` or adjust host folder permissions.
 - Port 443 busy: stop local Nginx/Apache or change host port mapping in `srcs/docker-compose.yml`.
-
