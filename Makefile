@@ -20,6 +20,7 @@ clean:
 fclean:
 	$(COMPOSE) down -v --rmi all --remove-orphans
 	rm -rf $(DATA_PATH)
+	docker system prune -a -f
 
 re: fclean all
 
