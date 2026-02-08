@@ -1,6 +1,6 @@
 SRCS_DIR    = ./srcs
 DATA_PATH   = $(HOME)/data
-COMPOSE     = docker-compose -f $(SRCS_DIR)/docker-compose.yml
+COMPOSE     = docker compose -f $(SRCS_DIR)/docker-compose.yml
 
 all: setup
 	$(COMPOSE) up -d --build
