@@ -1,27 +1,42 @@
-SRCS_DIR    = ./srcs
-DATA_PATH   = $(HOME)/data
-COMPOSE     = docker compose -f $(SRCS_DIR)/docker-compose.yml
+# Variables
+USER	=	$(shell whoami)
+DATA_PATH	=	/home/$(USER)/data
 
-all: setup
-	$(COMPOSE) up -d --build
+#Commands
+COMPOSE     = docker compose -f srcs/docker-compose.yml --env-file srcs/.env
+BUILDKIT = DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1
+.RECIPEPREFIX := >
 
-up:
-	$(COMPOSE) up -d
+#Targets
+all: build 
+
+build:
+>@mkdir -p $(DATA_PATH)/mariadb $(DATA_PATH)/wordpress
+>$(BUILDKIT) $(COMPOSE) build --parallel
+
+up: build
+>$(COMPOSE) up -d
 
 down:
-	$(COMPOSE) down
+>$(COMPOSE) down
 
-setup:
-	@mkdir -p $(DATA_PATH)/mariadb $(DATA_PATH)/wordpress
+logs:
+>$(COMPOSE) logs -f
+
+ps:
+>$(COMPOSE) ps
+
+images:
+>$(COMPOSE) images
 
 clean:
-	$(COMPOSE) down --rmi all --remove-orphans
+>$(COMPOSE) down --rmi all --remove-orphans
 
-fclean:
-	$(COMPOSE) down -v --rmi all --remove-orphans
-	rm -rf $(DATA_PATH)
-	docker system prune -a -f
+fclean: clean
+>$(COMPOSE) down -v
+>sudo rm -rf $(DATA_PATH)
+>docker system prune -a -f
 
 re: fclean all
 
-.PHONY: all up down setup clean fclean re
+.PHONY:all  build up down logs ps images clean fclean re

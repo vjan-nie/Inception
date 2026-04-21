@@ -1,3 +1,16 @@
+# Security: Environment variables
 .env
+srcs/.env
+
+# Security: Docker Secrets
+secrets/
+srcs/requirements/mariadb/conf/.root_password
+srcs/requirements/mariadb/conf/.user_password
+
+# Data & Volumes
 data/
+
+# Logs & temps
 *.log
+-DS_Store
+
