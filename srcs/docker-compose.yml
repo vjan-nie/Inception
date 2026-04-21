@@ -1,58 +1,101 @@
+version: "3.8"
+
 services:
-  mariadb:
-    build:
-      context: ./requirements/mariadb
-    container_name: mariadb
-    restart: always
-    env_file: ../.env
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - inception_network
-
-  wordpress:
-    build:
-      context: ./requirements/wordpress
-    container_name: wordpress
-    restart: always
-    depends_on:
-      - mariadb
-    env_file: ../.env
-    volumes:
-      - wordpress_data:/var/www/html
-    networks:
-      - inception_network
-
   nginx:
-    build:
-      context: ./requirements/nginx
+    build: ./requirements/nginx
     container_name: nginx
-    restart: always
-    depends_on:
-      - wordpress
+    restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "443:443"
-    volumes:
-      - wordpress_data:/var/www/html
     networks:
-      - inception_network
+      - inception
+    volumes:
+      - wp_data:/var/www/html
+
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wp_data:/var/www/html
+
+  redis:
+    build: ./requirements/redis
+    container_name: redis
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception
+
+  ftp:
+    build: ./requirements/ftp
+    container_name: ftp
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - wp_data:/var/www/html
+
+  adminer:
+    build: ./requirements/adminer
+    container_name: adminer
+    restart: unless-stopped
+    networks:
+      - inception
+    ports:
+      - "8080:8080"
+
+  static:
+    build: srcs/requirements/static
+    container_name: static
+    restart: unless-stopped
+    ports:
+      - "8081:80"
 
 networks:
-  inception_network:
+  inception:
     driver: bridge
 
 volumes:
-  mariadb_data:
+  wp_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      
-      device: ${HOME}/data/mariadb
+      device: /home/${USER}/data/wordpress
 
-  wordpress_data:
+  db_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ${HOME}/data/wordpress
+      device: /home/${USER}/data/mariadb
+

@@ -13,4 +13,6 @@ data/
 # Logs & temps
 *.log
 -DS_Store
+get-docker.sh
+
 
