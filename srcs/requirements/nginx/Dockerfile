@@ -1,22 +1,19 @@
-FROM debian:bullseye
+FROM alpine:3.18
 
-RUN apt-get update && apt-get install -y nginx openssl && \
-    rm -rf /var/lib/apt/lists/*
+# Nginx and OpenSSL clean install
+RUN apk add --no-cache nginx openssl
 
-# Set necessary paths
+# Paths for processes and certificates
 RUN mkdir -p /etc/nginx/ssl /var/run/nginx
 
-# Generate certificate (just once during build)
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /etc/nginx/ssl/inception.key \
-    -out /etc/nginx/ssl/inception.crt \
-    -subj "/C=ES/ST=Madrid/L=Madrid/O=42/OU=vjan-nie/CN=vjan-nie.42.fr"
+# Copy config file
+COPY conf/nginx.conf /etc/nginx/http.d/default.conf
 
-# Replace default configuration with our own
-RUN rm -f /etc/nginx/sites-enabled/default
-COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
-COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy entrypoint script that generates certificates
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 443
 
-CMD ["nginx", "-g", "daemon off;"]
+# Script takes control when starting container
+ENTRYPOINT ["/entrypoint.sh"]
+
