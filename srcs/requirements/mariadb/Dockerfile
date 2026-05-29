@@ -1,17 +1,17 @@
-FROM debian:bullseye
+FROM alpine:3.18
 
-RUN apt-get update && apt-get install -y mariadb-server && \
-    rm -rf /var/lib/apt/lists/*
+# 1. Install MAriaDB client and server (to be able to use mariadb-admin)
+RUN apk add --no-cache mariadb mariadb-client
 
-RUN mkdir -p /var/run/mysqld && \
-    chown -R mysql:mysql /var/run/mysqld && \
-    chmod 755 /var/run/mysqld
+# 2. Copy unified config
+COPY conf/my.cnf /etc/my.cnf
 
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+# 3. Copy entrypoint.sh script
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-COPY tools/setup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup.sh
-
+# 4. Expose inner database port
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/local/bin/setup.sh"]
+# 5. When starting container, give control to the script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
