@@ -1,32 +1,40 @@
-FROM debian:bullseye
+FROM alpine:3.18
 
-RUN apt-get update && apt-get install -y \
-    php7.4-fpm \
-    php7.4-mysql \
+# Unify dependency install, WP-CLI download, and permission adjustments in just one RUN (just one layer)
+RUN apk add --no-cache \
+    php81 \
+    php81-fpm \
+    php81-mysqli \
+    php81-json \
+    php81-openssl \
+    php81-curl \
+    php81-zlib \
+    php81-xml \
+    php81-phar \
+    php81-intl \
+    php81-dom \
+    php81-xmlwriter \
+    php81-xmlreader \
+    php81-ctype \
+    php81-session \
+    php81-mbstring \
     curl \
     mariadb-client \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install WP-CLI
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# PHP-FPM needs this path to exist
-RUN mkdir -p /run/php && chmod 755 /run/php
+# Copy config files
+COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Configuration and Script
-COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
-COPY tools/setup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup.sh
+# Adjust script's permission after copy
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# In case it doesn't existe, create folder
 WORKDIR /var/www/html
 
 EXPOSE 9000
 
-ENTRYPOINT ["/usr/local/bin/setup.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# -F to enforce PID1
-CMD ["/usr/sbin/php-fpm7.4", "-F"]
+CMD ["php-fpm81", "-F"]
