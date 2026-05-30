@@ -9,7 +9,8 @@ RUN mkdir -p /etc/nginx/ssl /var/run/nginx
 # Copy config file
 COPY conf/nginx.conf /etc/nginx/http.d/default.conf
 
-# Copy entrypoint script that generates certificates
+# Copy entrypoint script that generates certificates + permissions
+COPY tools/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 443
