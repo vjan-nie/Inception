@@ -13,6 +13,8 @@ services:
       - inception
     volumes:
       - wp_data:/var/www/html
+    depends_on:
+      - wordpress
 
   mariadb:
     build: ./requirements/mariadb
@@ -33,55 +35,14 @@ services:
       - .env
     networks:
       - inception
-    environment:
-      WORDPRESS_DB_HOST: mariadb:3306
-      WORDPRESS_DB_NAME: ${DB_NAME}
-      WORDPRESS_DB_USER: ${DB_USER}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
     volumes:
       - wp_data:/var/www/html
-
-  redis:
-    build: ./requirements/redis
-    container_name: redis
-    restart: unless-stopped
-    env_file:
-      - .env
-    networks:
-      - inception
-
-  ftp:
-    build: ./requirements/ftp
-    container_name: ftp
-    restart: unless-stopped
-    env_file:
-      - .env
-    networks:
-      - inception
-    ports:
-      - "21:21"
-      - "21100-21110:21100-21110"
-    volumes:
-      - wp_data:/var/www/html
-
-  adminer:
-    build: ./requirements/adminer
-    container_name: adminer
-    restart: unless-stopped
-    networks:
-      - inception
-    ports:
-      - "8080:8080"
-
-  static:
-    build: srcs/requirements/static
-    container_name: static
-    restart: unless-stopped
-    ports:
-      - "8081:80"
+    depends_on:
+      - mariadb
 
 networks:
   inception:
+    name: inception_network
     driver: bridge
 
 volumes:
@@ -90,12 +51,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER}/data/wordpress
+      device: /home/${LOGIN}/data/wordpress
 
   db_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER}/data/mariadb
-
+      device: /home/${LOGIN}/data/mariadb
