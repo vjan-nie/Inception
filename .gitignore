@@ -2,10 +2,8 @@
 .env
 srcs/.env
 
-# Security: Docker Secrets
-secrets/
-srcs/requirements/mariadb/conf/.root_password
-srcs/requirements/mariadb/conf/.user_password
+# Security: Docker Secrets (track *.txt.example, ignore real *.txt)
+secrets/*.txt
 
 # Data & Volumes
 data/
@@ -15,4 +13,4 @@ data/
 -DS_Store
 get-docker.sh
 
-
+CLAUDE.md

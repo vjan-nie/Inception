@@ -26,6 +26,9 @@ services:
       - inception
     volumes:
       - db_data:/var/lib/mysql
+    secrets:
+      - db_root_password
+      - db_password
 
   wordpress:
     build: ./requirements/wordpress
@@ -39,6 +42,10 @@ services:
       - wp_data:/var/www/html
     depends_on:
       - mariadb
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
 
 networks:
   inception:
@@ -59,3 +66,13 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/data/mariadb
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt

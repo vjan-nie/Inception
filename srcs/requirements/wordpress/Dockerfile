@@ -22,7 +22,10 @@ RUN apk add --no-cache \
     mariadb-client \
     && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp
+    && mv wp-cli.phar /usr/local/bin/wp \
+    && addgroup -S nginx \
+    && adduser -S -G nginx nginx \
+    && echo "memory_limit=256M" > /etc/php81/conf.d/50_memory.ini
 
 # Copy config files
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf

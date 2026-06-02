@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eu
 
+MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+
 # 1. Make sure that paths and correct permissions exist
 mkdir -p /run/mysqld /var/lib/mysql
 chown -R mysql:mysql /run/mysqld /var/lib/mysql

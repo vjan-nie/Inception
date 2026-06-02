@@ -12,6 +12,13 @@ all: up
 
 build:
 >@if [ ! -f srcs/.env ]; then cp .env.example srcs/.env; echo "Created srcs/.env from example"; fi
+>@mkdir -p secrets
+>@for s in db_root_password db_password wp_admin_password wp_user_password; do \
+>    if [ ! -f secrets/$$s.txt ]; then \
+>        cp secrets/$$s.txt.example secrets/$$s.txt; \
+>        echo "WARNING: secrets/$$s.txt created from example – replace with a real password!"; \
+>    fi \
+>done
 >@mkdir -p $(DATA_PATH)/mariadb $(DATA_PATH)/wordpress
 >$(BUILDKIT) $(COMPOSE) build --parallel
 
@@ -31,6 +38,7 @@ images:
 >$(COMPOSE) images
 
 clean:
+>@[ -f srcs/.env ] || cp .env.example srcs/.env
 >$(COMPOSE) down --rmi all --remove-orphans
 
 fclean: clean
