@@ -1,23 +1,23 @@
-FROM alpine:3.18
+FROM alpine:3.22
 
 # Unify dependency install, WP-CLI download, and permission adjustments in just one RUN (just one layer)
 RUN apk add --no-cache \
-    php81 \
-    php81-fpm \
-    php81-mysqli \
-    php81-json \
-    php81-openssl \
-    php81-curl \
-    php81-zlib \
-    php81-xml \
-    php81-phar \
-    php81-intl \
-    php81-dom \
-    php81-xmlwriter \
-    php81-xmlreader \
-    php81-ctype \
-    php81-session \
-    php81-mbstring \
+    php83 \
+    php83-fpm \
+    php83-mysqli \
+    php83-json \
+    php83-openssl \
+    php83-curl \
+    php83-zlib \
+    php83-xml \
+    php83-phar \
+    php83-intl \
+    php83-dom \
+    php83-xmlwriter \
+    php83-xmlreader \
+    php83-ctype \
+    php83-session \
+    php83-mbstring \
     curl \
     mariadb-client \
     && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
@@ -25,10 +25,10 @@ RUN apk add --no-cache \
     && mv wp-cli.phar /usr/local/bin/wp \
     && addgroup -S nginx \
     && adduser -S -G nginx nginx \
-    && echo "memory_limit=256M" > /etc/php81/conf.d/50_memory.ini
+    && echo "memory_limit=256M" > /etc/php83/conf.d/50_memory.ini
 
 # Copy config files
-COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+COPY conf/www.conf /etc/php83/php-fpm.d/www.conf
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # Adjust script's permission after copy
@@ -40,4 +40,4 @@ EXPOSE 9000
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD ["php-fpm81", "-F"]
+CMD ["php-fpm83", "-F"]

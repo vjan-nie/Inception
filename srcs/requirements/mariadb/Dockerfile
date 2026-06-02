@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.22
 
 # 1. Install MAriaDB client and server (to be able to use mariadb-admin)
 RUN apk add --no-cache mariadb mariadb-client

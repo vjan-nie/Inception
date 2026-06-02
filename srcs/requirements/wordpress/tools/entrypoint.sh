@@ -6,7 +6,7 @@ WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
 
 echo "WordPress: Waiting for MariaDB to be ready..."
-until mariadb-admin ping -h mariadb --silent >/dev/null 2>&1; do
+until mariadb-admin -h mariadb -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" ping --silent >/dev/null 2>&1; do
     sleep 2
 done
 
