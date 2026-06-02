@@ -1,10 +1,8 @@
 FROM alpine:3.18
 
-# Nginx and OpenSSL clean install
-RUN apk add --no-cache nginx openssl
-
-# Paths for processes and certificates
-RUN mkdir -p /etc/nginx/ssl /var/run/nginx
+# Nginx and OpenSSL clean install + Paths for processes and certificates
+RUN apk add --no-cache nginx openssl \
+    && mkdir -p /etc/nginx/ssl /var/run/nginx
 
 # Copy config file
 COPY conf/nginx.conf /etc/nginx/http.d/default.conf
