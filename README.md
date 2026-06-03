@@ -6,6 +6,8 @@
 
 **Inception** is a System Administration project from the 42 curriculum, built to deepen understanding of virtualization and infrastructure-as-code using **Docker**. It sets up a small LEMP-like stack where each service — **NGINX**, **WordPress + PHP-FPM** and **MariaDB** — runs in its own container, built from a hand-written Dockerfile. The containers talk to each other over a private Docker network, persist their data through host bind mounts, and are reachable from the outside world only through NGINX over TLS on port 443.
 
+> **📖 How it works** — see **[GUIDE.md](GUIDE.md)**: a walkthrough of the stack and how each piece maps to production infrastructure.
+
 ## Project description & design choices
 
 The whole stack is orchestrated from the `srcs/` directory:
