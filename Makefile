@@ -1,5 +1,6 @@
 # Variables
 USER    =   $(shell whoami)
+export LOGIN := $(USER)
 DATA_PATH   =   /home/$(USER)/data
 
 #Commands
