@@ -8,6 +8,37 @@
 
 > **📖 How it works** — see **[GUIDE.md](GUIDE.md)**: a walkthrough of the stack and how each piece maps to production infrastructure.
 
+```mermaid
+flowchart TB
+    browser["Browser on hosthttps://vjan-nie.42.fr"]
+
+    subgraph host["Host machine / VM"]
+        subgraph net["Docker network: inception_network"]
+            nginx["nginxTLS 1.2 / 1.3 - :443"]
+            wp["wordpress + PHP-FPM:9000"]
+            db["mariadb:3306"]
+        end
+        wpvol[("wp_datahost: ~/data/wordpress")]
+        dbvol[("db_datahost: ~/data/mariadb")]
+        secrets["Docker secrets/run/secrets"]
+    end
+
+    browser -->|"HTTPS :443"| nginx
+    nginx -->|"FastCGI :9000"| wp
+    wp -->|"SQL :3306"| db
+    nginx -.->|serves| wpvol
+    wp -.->|read / write| wpvol
+    db -.->|read / write| dbvol
+    secrets -.->|passwords| db
+    secrets -.->|passwords| wp
+```
+
+> The browser is the only thing that crosses into the stack, and only over TLS on port 443.
+> The containers talk on a private network; data lives in host bind mounts; passwords are injected as Docker secrets.
+
+> Runs inside a Debian VM — provisioning automated in [Debian_VM](https://github.com/vjan-nie/Debian_VM).
+
+
 ## Project description & design choices
 
 The whole stack is orchestrated from the `srcs/` directory:
