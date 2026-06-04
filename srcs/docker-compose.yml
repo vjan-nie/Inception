@@ -1,6 +1,7 @@
 services:
   nginx:
     build: ./requirements/nginx
+    image: nginx:1.0
     container_name: nginx
     restart: unless-stopped
     env_file:
@@ -16,6 +17,7 @@ services:
 
   mariadb:
     build: ./requirements/mariadb
+    image: mariadb:1.0
     container_name: mariadb
     restart: unless-stopped
     env_file:
@@ -30,6 +32,7 @@ services:
 
   wordpress:
     build: ./requirements/wordpress
+    image: wordpress:1.0
     container_name: wordpress
     restart: unless-stopped
     env_file:
