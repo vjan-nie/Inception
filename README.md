@@ -10,7 +10,7 @@
 
 ```mermaid
 flowchart TB
-    browser["Browser on hosthttps://vjan-nie.42.fr"]
+    browser["Browser on host https://vjan-nie.42.fr"]
 
     subgraph host["Host machine / VM"]
         subgraph net["Docker network: inception_network"]
